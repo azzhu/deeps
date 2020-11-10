@@ -1,0 +1,13 @@
+# 学习率
+learning_rate = 0.0002
+
+# 各种损失权重设置
+prec_loss_w = 0.01
+loss_mse_w = 1
+loss_ms_w = 1
+# prec_loss_w = 1
+loss_d_w = 1
+
+# 额外增加的inds，用以提高某类出现的概率
+inds = 0,0,0,0,0,0,1,1,1,2,2,3
+# inds = 0
