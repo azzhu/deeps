@@ -8,36 +8,26 @@
 A deep learning framework for image processing with single pair of training images
 
 ---
+<div align='center'>
+
+![img](imgs/57_cb_label.jpg)
+</div>
 
 In biological studies, there is a huge demand to recover high-quality images from low quality images. Basically, two typical steps are implemented to denoise and then deconvolute. Traditional methods have been developed to deal with different senarios separately. For us, it’s a reverse process either decreasing or increasing information of images. Here, we have proposed DeepS to fulfill the reverse functions with the same deep learning framework.
 
 ![img](imgs/img.jpg)
 
-This 
+We provide two ways for you to process your datas, a [web server](http://deeps.cibr.ac.cn/) and a package([download](http://119.90.33.35:3557/sharing/wJWmfODpQ)) that can run in your computer.
 
-## Input and Output
-input: wide-field image
 
-output: optically sectioned image
 
-### Neural Network Architecture
-Using a generative adversarial network.
 
-G: unet
+### Useful Links
 
-D: cnn
+💜 Deeps homepage: http://deeps.cibr.ac.cn/
 
-### Loss Functions
-MSE loss
+💜 Deeps inference package repository: https://github.com/azzhu/Deeps_Inference_Package
 
-Perceptive loss (VGG16)
+💜 Deeps server repository: https://github.com/azzhu/deeps
 
-Adversarial loss
-
-**Latest updates:** 
-
-💜 we havce
-
-:purple_heart: DeepLabCut supports multi-animal pose estimation (BETA release, plese give us your feedback! `pip install deeplabcut==2.2b8`).
-
-:purple_heart: We have a real-time package available! http://DLClive.deeplabcut.org
+💜 CIBR homepage: http://www.cibr.ac.cn/
