@@ -10,7 +10,9 @@ A deep learning framework for image processing with single pair of training imag
 ---
 <div align='center'>
 
-![img](imgs/57_cb_label.jpg)
+![img_sr](imgs/57_cb_label.jpg)
+
+![img_os](imgs/5_cb_label.jpg)
 </div>
 
 In biological studies, there is a huge demand to recover high-quality images from low quality images. Basically, two typical steps are implemented to denoise and then deconvolute. Traditional methods have been developed to deal with different senarios separately. For us, it’s a reverse process either decreasing or increasing information of images. Here, we have proposed DeepS to fulfill the reverse functions with the same deep learning framework.
