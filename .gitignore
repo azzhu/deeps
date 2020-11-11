@@ -3,3 +3,5 @@ data/
 .idea/
 *.docx
 *.tmp
+tfeager.py
+*.pptx
