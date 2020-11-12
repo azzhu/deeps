@@ -30,8 +30,10 @@ We provide two ways for you to process your datas, a [web server](http://deeps.c
 
 💜 Deeps homepage: http://deeps.cibr.ac.cn/
 
-💜 Deeps inference package repository: https://github.com/azzhu/Deeps_Inference_Package
+💜 Deeps documentation: https://github.com/azzhu/deeps/blob/master/SERVER/webserver_doc.md
 
-💜 Deeps server repository: https://github.com/azzhu/deeps
+💜 Deeps repository: https://github.com/azzhu/deeps
+
+💜 Deeps inference package repository: https://github.com/azzhu/Deeps_Inference_Package
 
 💜 CIBR homepage: http://www.cibr.ac.cn/
