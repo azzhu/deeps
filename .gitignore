@@ -5,3 +5,5 @@ data/
 *.tmp
 tfeager.py
 *.pptx
+*.psd
+SERVER/server启动步骤.txt
