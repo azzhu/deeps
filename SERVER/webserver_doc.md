@@ -24,6 +24,7 @@ Deeps demo结果展示。
 ### Super Resolution and Optical Section
 
 该页面包含两个功能模块，Train（训练自己的数据）和Inference（推理自己的数据）。Train模块如下图所示：
+
 ![train](imgs/train.jpg "train")
 
 - Do not save my data
@@ -47,6 +48,7 @@ Deeps demo结果展示。
 点击该按钮，开始训练。为了解决模型在小样本情况下的训练问题，我们使用了迁移学习的方式，您的数据会在我们之前预训练好的模型的基础之上开始训练。
 
 Inference 模块示意图如下：
+
 ![inference](imgs/inference.jpg)
 
 - Do not save my data
@@ -90,7 +92,7 @@ Inference 模块示意图如下：
 1. 选择inference
 2. 勾选Use personal trained set
 3. 点击choose my image
-4. 点击run
+5. 点击run
 
 ### 下载模型
 
@@ -102,13 +104,14 @@ Inference 模块示意图如下：
 
 
 
-
 ## Useful Links
 
 💜 Deeps homepage: http://deeps.cibr.ac.cn/
 
-💜 Deeps inference package repository: https://github.com/azzhu/Deeps_Inference_Package
+💜 Deeps documentation: https://github.com/azzhu/deeps/blob/master/SERVER/webserver_doc.md
 
-💜 Deeps server repository: https://github.com/azzhu/deeps
+💜 Deeps repository: https://github.com/azzhu/deeps
+
+💜 Deeps inference package repository: https://github.com/azzhu/Deeps_Inference_Package
 
 💜 CIBR homepage: http://www.cibr.ac.cn/
