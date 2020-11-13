@@ -1,7 +1,7 @@
 
 <div align='center'>
 
-![logo](imgs/logo0.7.jpg)
+![logo](imgs/logo2.jpg)
 </div>
 
 

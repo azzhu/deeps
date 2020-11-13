@@ -11,11 +11,11 @@ A deep learning framework of image processing with single pair of training image
 
 This tutorial is mainly to introduce some key features and usages of **DeepS**, including: 
 
-- how to inference your data;
-- how to train new model;
-- how to use new trained model to inference data;
-- how to download pre-trained and new trained model;
-- how to download software program to perform inferring on local computers and so on.
+- How to inference your data;
+- How to train new model;
+- How to use new trained model to inference data;
+- How to download pre-trained and new trained model;
+- How to download software program to perform inferring on local computers and so on.
  
 ## <font color=blue> Introduction  </font>
 
