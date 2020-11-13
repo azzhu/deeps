@@ -1,106 +1,114 @@
 
 <div align='center'>
 
-![logo](../imgs/logo0.7.jpg)
+![logo](../imgs/logo2.jpg)
 </div>
 
 
-A deep learning framework for image processing with single pair of training images
+A deep learning framework of image processing with single pair of training images
 
 ---
 
-该教程主要向您介绍deeps以及怎样使用deeps，包括怎样推理自己的数据、怎样训练自己的模型、怎样使用自己训练的模型推理新的数据、怎样下载预训练的模型以及自己训练的模型、怎样下载软件程序在自己本机上执行推理等等几个方面。
+This tutorial is mainly to introduce some key features and usages of **DeepS**, including: 
 
-## Introduction
+- how to inference your data;
+- how to train new model;
+- how to use new trained model to inference data;
+- how to download pre-trained and new trained model;
+- how to download software program to perform inferring on local computers and so on.
+ 
+## <font color=blue> Introduction  </font>
 
 ### Home
 
-关于deeps的简介。
+Brief introduction to **DeepS**.
 
 ### Demo
 
-Deeps demo结果展示。
+The results of the **DeepS** demo are shown.
 
 ### Super Resolution and Optical Section
 
-该页面包含两个功能模块，Train（训练自己的数据）和Inference（推理自己的数据）。Train模块如下图所示：
+There are two function models in this page: ***'Training'*** (train your data) & ***'Inference'*** (inference your data). The ***'Training'*** module is shown in the figure below: 
 
 ![train](imgs/train.jpg "train")
 
 - Do not save my data
 
-一般情况下，为了增强我们的模型性能，我们希望您能共享您的数据，但如果您勾选了该选项，我们将尊重您的隐私，不会保存你的数据。
+Generally, we hope you can share your data to enhance our model performance. But if you don't want to share, we must respect your data privacy and delete it in our server timely. And please remember to check this option to tell us don't save your data. 
 
 - Choose my data file and choose my label file
 
-选择一对可供训练的图像数据。为了达到更好的训练效果，建议您上传分辨率更大的图像。我们支持的分辨率范围最小为512*512，最大为10000*10000。需要注意的是，该对训练数据必须严格对齐，如果训练数据没有对齐，那么训练将没有任何意义。
+Choose one paired images which can be trained. In order to achieve better training effect, it is recommended that you upload images with higher resolution. We support resolutions from '512x512' to '10000x10000'. It should be noted that the training data must be strictly aligned. If the training data is not aligned, then the training will be meaningless.
 
 - Add more training data and remove last training data
 
-默认情况下只可以选择一对训练数据，但是如果您想达到更好的实验效果，且您有更多的数据，则建议您通过该选项来管理（添加或者删除）更多的训练数据。
+By default, only a pair of training data can be selected, but if you want better experimental results and you have more data, it is recommended that you manage (***Add more training data or Remove last training data***) more training data with this option.
 
 - Example
 
-如果您没有自己的训练数据，但是想体验训练的过程，您可以勾选该选项，使用我们提供的示例训练数据。注意，使用该示例训练数据来训练模型并不会增加模型性能，因为该数据被包含在了当前预训练好的模型的训练集里。
+If you don't have training data, but still want to try the training process, you can check this option and use the sample training data we provided. Note that using the sample training data to train the model  can't increase model performance, because the data was included in the training set of the current pre-training model.
 
 - Run
 
-点击该按钮，开始训练。为了解决模型在小样本情况下的训练问题，我们使用了迁移学习的方式，您的数据会在我们之前预训练好的模型的基础之上开始训练。
+Click the button to start training. In order to solve the training problem of the model in the small sample case, we use the *transfer learning* method. Your data will start training on the basis of the model we have pre-trained previously.
 
-Inference 模块示意图如下：
+The schematic diagram of the ***'Inference module'*** is shown below.
 
 ![inference](imgs/inference.jpg)
 
 - Do not save my data
 
-如果您不希望我们保留您的数据，请您勾选该选项。
+If you do not want us to keep your data, please check this option. 
+
 - Just use unet
 
-我们使用了两种模型结构，deeps和unet，这两种结构训练出的模型分别有自己的特点。以我们的经验，我们建议您使用deeps（也就是不勾选该选项），如果deeps达不到您的期望，您也可以尝试unet的结果，good luck。
+We used two model architecture, 'deeps' and 'unet', and these two architecture were trained to have their own characteristics. We recommend that you use '***deeps***' (don't check this option). But if '***deeps***' can't reach your expectations, you can also try '***unet***' model. Good Luck.
+
 - Use personal trained set
 
-如果您在上一步使用自己的数据训练了新的模型，这里您可以勾选该选项，来查看自己训练的模型的效果。如果不勾选该选项，则使用默认的模型（即我们预训练的模型）来进行推理。
+If you have trained the new model with your own data in the previous step, you can check this option here to see the effect of the model you have trained. If this option is not checked, the default model (that is, the model we pre-trained) is used for inferring.
 
 - Choose my image
 
-选择自己的数据，如果勾选后面的example，则会使用示例数据。
+Select your own data. If you check the following example, the sample data will be used. 
 
 - Run
 
-开始执行推理，请等待。
+Start to execute the inferring. Please wait. 
 
-## What do you want to do?
+## <font color=blue> What do you want to do?
 
-### 使用预训练的模型推理自己的数据
+### Use pre-trained model to inference your data 
 
-1. 主页
-2. 点击SR or OS
-3. 选择inference
-4. 点击choose my image
-5. 点击run
+1. Home page 
+2. Chick on 'Super Resolution' or 'Optical Section' 
+3. Choose 'Inference' 
+4. Click on 'Choose my image'
+5. Click on 'Run' 
 
-### 自己有标记好的数据，想训练自己的模型
+### Train a new model based on your own data
 
-1. 主页
-2. 点击SR or OS
-3. 选择train
-4. Choose my data file，choose my label file
-5. Run
+1. Home page 
+2. Chick on 'Super Resolution' or 'Optical Section' 
+3. Choose 'Train' 
+4. Choose my data file & choose my label file
+5. Chick on 'Run' 
 
-### 使用刚刚自己训练好的模型推理新的数据
+### Use new trained models to inference new data
 
-1. 选择inference
-2. 勾选Use personal trained set
-3. 点击choose my image
-5. 点击run
+1. Choose 'Inference' 
+2. Choose 'Use personal trained set' 
+3. Chick on 'Choose my image' 
+5. Chick on 'Run' 
 
-### 下载模型
+### Download model 
 
-等训练完成后会有下载链接，点击即可下载
+You can download the model by clicking on the link provided after the training. 
 
-### 使用下载的模型在自己本机上运行
+### Use the downloaded model to run on your local computer
 
-参见https://github.com/azzhu/Deeps_Inference_Package/blob/master/README.md
+Please see this for more information: https://github.com/azzhu/Deeps_Inference_Package/blob/master/README.md
 
 
 
