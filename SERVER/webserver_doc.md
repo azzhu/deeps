@@ -37,11 +37,11 @@ There are two function models in this page: ***'Training'*** (train your data) &
 
 Generally, we hope you can share your data to enhance our model performance. But if you don't want to share, we must respect your data privacy and delete it in our server timely. And please remember to check this option to tell us don't save your data. 
 
-- Choose my data file and choose my label file
+- Choose my data file *and* choose my label file
 
 Choose one paired images which can be trained. In order to achieve better training effect, it is recommended that you upload images with higher resolution. We support resolutions from '512x512' to '10000x10000'. It should be noted that the training data must be strictly aligned. If the training data is not aligned, then the training will be meaningless.
 
-- Add more training data and remove last training data
+- Add more training data *and* remove last training data
 
 By default, only a pair of training data can be selected, but if you want better experimental results and you have more data, it is recommended that you manage (***Add more training data or Remove last training data***) more training data with this option.
 
@@ -100,7 +100,7 @@ Start to execute the inferring. Please wait.
 1. Choose 'Inference' 
 2. Choose 'Use personal trained set' 
 3. Chick on 'Choose my image' 
-5. Chick on 'Run' 
+4. Chick on 'Run' 
 
 ### Download model 
 
