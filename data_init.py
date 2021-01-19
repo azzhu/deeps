@@ -2,11 +2,29 @@ import cv2, random
 import numpy as np
 import config
 import os
+from nd2file import ND2MultiDim
 
 # param
 hw = config.size
 step = config.step
 data_path = config.data_path
+
+
+def read_nd2(p):
+    '''
+    读一张nd2格式的图像（1024*1024），归一化，返回被分割的4张小图像（512*512）
+    :param p:
+    :return:
+    '''
+    nd2 = ND2MultiDim(p)
+    img = nd2.image_singlechannel()
+    img = img.astype(np.float) / img.max()
+    return [
+        img[:512, :512],
+        img[:512, 512:],
+        img[512:, :512],
+        img[512:, 512:]
+    ]
 
 
 # 0-1的矩阵保存为0-255的图像
