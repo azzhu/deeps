@@ -50,6 +50,11 @@ class UNET_os():
 
         # dataset_train, dataset_test = load_data_2()
         with sf.graph.as_default():
+            if predict_flag:
+                sf.x = tf.placeholder(tf.float32, [None, H, W, 1])
+                # sf.istraining = True
+                sf.prd = sf.gen(sf.x)
+                return
             with tf.device('/cpu:0'):
                 if sf.istraining:
                     sf.x = tf.placeholder(tf.float32, [None, H, W, 1])
