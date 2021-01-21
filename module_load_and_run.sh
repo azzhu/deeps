@@ -7,8 +7,9 @@ module load cudnn/7.4.2
 
 # 设置可用GPU
 echo 'set GPUs'
-export CUDA_VISIBLE_DEVICES="0,1"
+export CUDA_VISIBLE_DEVICES="7"
 
 # 运行python脚本
 echo 'run'
-/home/zhangli_lab/zhuqingjie/DATA/env/py3/bin/python predict.py
+#/home/zhangli_lab/zhuqingjie/DATA/env/py3/bin/python predict.py
+/home/zhangli_lab/zhuqingjie/DATA/env/py3/bin/python train.py

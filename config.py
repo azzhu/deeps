@@ -1,30 +1,25 @@
-# param
-gpus = [
-    0,
-    # 1,
-    # 2,
-    # 3,
-]
-gpu_nbs = len(gpus)
-epoch = 20
-batch_per_gpu = 8
-batch_size = batch_per_gpu * gpu_nbs
+#####################
 
-print('batch_per_gpu:{}'.format(batch_per_gpu))
+#####################
+
+# param
+# 多gpu是坑，新版本将不支持多GPU
+# epoch = 20
+# batch_size = 8
 
 prjdir = '/home/zhangli_lab/zhuqingjie/DATA/prj'
 
 # data init
 # 可以用的hw值：384,448,512
-size = hw = 256
-step = 80
+# size = hw = 256
+# step = 80
 data_path = f'{prjdir}/tunet_onesample/data/'
 
 workdir = f'{prjdir}/tunet_onesample/'
-logdir = f'{prjdir}/tunet_onesample/logdir/'
+logdir = f'{prjdir}/tunet_onesample/logdir_nd2/'
 
 restore_model = False
-restore_path = f'{prjdir}/tunet_onesample/logdir'
+restore_path = f'{prjdir}/tunet_onesample/logdir_nd2'
 
 
 def read_hot_config():

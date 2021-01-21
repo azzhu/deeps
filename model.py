@@ -22,6 +22,7 @@ def get_available_gpus():
 # print(get_available_gpus)
 
 
+# 统一框架，新版本统一使用UNET_sr框架
 class UNET_os():
     def __init__(sf, predict_flag=False, H=None, W=None, learning_rate=0.0001):
         print_(f'TensorFlow version: {tf.__version__}')
@@ -401,113 +402,75 @@ class UNET_sr():
                 # sf.istraining = True
                 sf.prd = sf.gen(sf.x)
                 return
-            with tf.device('/cpu:0'):
-                # init dataset
-                # sf.train_flag = tf.placeholder(dtype=tf.bool)
 
-                # feed mode
-                sf.x = tf.placeholder(tf.float32, [None, H, W, 1])
-                sf.y = tf.placeholder(tf.float32, [None, H, W, 1])
+            # feed mode
+            sf.x = tf.placeholder(tf.float32, [None, H, W, 1])
+            sf.y = tf.placeholder(tf.float32, [None, H, W, 1])
 
-                # if predict_flag:
-                #     pass
+            sf.opt = tf.train.AdamOptimizer(learning_rate=learning_rate)
+            sf.global_step = tf.Variable(0, trainable=False)
 
-                # Multi GPU
-                # sf.opt = tf.train.AdamOptimizer(0.0001)
-                sf.opt = tf.train.AdamOptimizer(learning_rate=learning_rate)
-                sf.global_step = tf.Variable(0, trainable=False)
-                tower_grads_G = []
-                tower_grads_D = []
-                for gpu_i in range(len(config.gpus)):
-                    with tf.device('/gpu:{}'.format(gpu_i)):
-                        with tf.name_scope('tower_{}'.format(gpu_i)):
-                            # split batch
-                            batch_per_gpu = config.batch_per_gpu
-                            x_ = sf.x[gpu_i * batch_per_gpu:(gpu_i + 1) * batch_per_gpu]
-                            y_ = sf.y[gpu_i * batch_per_gpu:(gpu_i + 1) * batch_per_gpu]
+            x_ = sf.x
+            y_ = sf.y
 
-                            prd = sf.gen(x_)
-                            d_prd = sf.disc(prd)
-                            loss_d_prd = tf.reduce_mean(d_prd)
-                            # loss_d_prd = tf.reduce_mean(tf.log(tf.clip_by_value(d_prd, 1e-10, 1.0)))
-                            d_y = sf.disc(y_)
-                            loss_d_y = tf.reduce_mean(d_y)
-                            # loss_d_y = tf.reduce_mean(tf.log(tf.clip_by_value(d_y, 1e-10, 1.0)))
-                            abs_error = tf.reduce_mean(tf.abs(y_ - prd))
+            prd = sf.gen(x_)
+            # d_prd = sf.disc(prd)
+            # loss_d_prd = tf.reduce_mean(d_prd)
+            # loss_d_prd = tf.reduce_mean(tf.log(tf.clip_by_value(d_prd, 1e-10, 1.0)))
+            # d_y = sf.disc(y_)
+            # loss_d_y = tf.reduce_mean(d_y)
+            # loss_d_y = tf.reduce_mean(tf.log(tf.clip_by_value(d_y, 1e-10, 1.0)))
+            abs_error = tf.reduce_mean(tf.abs(y_ - prd))
+            sf.abs_error = abs_error
 
-                            # MSE Loss
-                            # yr = tf.reshape(y_, [y_.shape[0], -1])
-                            # prdr = tf.reshape(prd, [prd.shape[0], -1])
-                            # loss_mse = tf.losses.mean_squared_error(yr, prdr)
-                            loss_mse = tf.keras.losses.MeanSquaredError()(y_, prd)
-                            # loss_ce = tf.losses.sigmoid_cross_entropy(yr, prdr)
-                            loss_bc = tf.keras.losses.BinaryCrossentropy()(y_, prd)
+            # MSE Loss
+            # yr = tf.reshape(y_, [y_.shape[0], -1])
+            # prdr = tf.reshape(prd, [prd.shape[0], -1])
+            # loss_mse = tf.losses.mean_squared_error(yr, prdr)
+            # loss_mse = tf.keras.losses.MeanSquaredError()(y_, prd)
+            # loss_ce = tf.losses.sigmoid_cross_entropy(yr, prdr)
+            # loss_bc = tf.keras.losses.BinaryCrossentropy()(y_, prd)
 
-                            # Perceptual Loss
-                            # vgg = VGG()
-                            # y_perc = vgg.forward(y_)
-                            # prd_perc = vgg.forward(prd)
-                            vgg = vgg16()
-                            y_perc = vgg(tf.concat([y_] * 3, axis=-1))
-                            prd_perc = vgg(tf.concat([prd] * 3, axis=-1))
-                            # yr_perc = tf.reshape(y_perc, [y_perc.shape[0], -1])
-                            # prdr_perc = tf.reshape(prd_perc, [prd_perc.shape[0], -1])
-                            # loss_perc = tf.losses.mean_squared_error(yr_perc, prdr_perc)
-                            loss_perc = tf.reduce_mean(tf.abs(y_perc - prd_perc))
+            # Perceptual Loss
+            # vgg = VGG()
+            # y_perc = vgg.forward(y_)
+            # prd_perc = vgg.forward(prd)
+            # vgg = vgg16()
+            # y_perc = vgg(tf.concat([y_] * 3, axis=-1))
+            # prd_perc = vgg(tf.concat([prd] * 3, axis=-1))
+            # yr_perc = tf.reshape(y_perc, [y_perc.shape[0], -1])
+            # prdr_perc = tf.reshape(prd_perc, [prd_perc.shape[0], -1])
+            # loss_perc = tf.losses.mean_squared_error(yr_perc, prdr_perc)
+            # loss_perc = tf.reduce_mean(tf.abs(y_perc - prd_perc))
 
-                            # Adversarial Loss
-                            loss_G = abs_error + loss_perc - loss_d_prd
-                            # loss_G = loss_mse * 1e2 + loss_perc * 1e-6 - loss_d_prd
-                            # loss_G = loss_mse
-                            loss_D = (loss_d_prd - loss_d_y) * 10
+            # Adversarial Loss
+            # loss_G = abs_error + loss_perc - loss_d_prd
+            # loss_G = loss_mse * 1e2 + loss_perc * 1e-6 - loss_d_prd
+            loss_G = abs_error
+            # loss_D = (loss_d_prd - loss_d_y) * 10
 
-                            # gard
-                            var_list_G = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'generator')
-                            var_list_D = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'discriminator')
-                            grads_G = sf.opt.compute_gradients(loss_G, var_list=var_list_G)
-                            grads_D = sf.opt.compute_gradients(loss_D, var_list=var_list_D)
-                            tower_grads_G.append(grads_G)
-                            tower_grads_D.append(grads_D)
+            # gard
+            var_list_G = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'generator')
+            # var_list_D = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'discriminator')
+            grads_G = sf.opt.compute_gradients(loss_G, var_list=var_list_G)
+            # grads_D = sf.opt.compute_gradients(loss_D, var_list=var_list_D)
 
-                            # summary
-                            if gpu_i == 0:
-                                sf.loss_mse = loss_mse
-                                sf.loss_bc = loss_bc
-                                sf.loss_perc = loss_perc
-                                sf.abs_error = abs_error
-                                sf.loss_G = loss_G
-                                sf.loss_D = loss_D
-                                # sf.ls_d_prd = ls_d_prd
-                                # sf.ls_d_y = ls_d_y
-                                sf.loss_d_prd = loss_d_prd
-                                sf.loss_d_y = loss_d_y
-                                sf.x_ = x_
-                                sf.y_ = y_
-                                sf.prd = prd
+            # summary
+            # tf.summary.scalar('loss1/loss_mse', loss_mse)
+            # tf.summary.scalar('loss1/loss_bc', loss_bc)
+            # tf.summary.scalar('loss1/loss_perc', loss_perc)
+            tf.summary.scalar('loss1/abs_error', abs_error * 255)
+            # tf.summary.scalar('DG_loss/G', loss_G)
+            # tf.summary.scalar('DG_loss/D', loss_D)
+            # tf.summary.scalar('Dloss/loss_d_prd', loss_d_prd)
+            # tf.summary.scalar('Dloss/loss_d_y', loss_d_y)
+            tf.summary.image('img/0x', x_[0:1], max_outputs=1)
+            tf.summary.image('img/2y', y_[0:1], max_outputs=1)
+            tf.summary.image('img/1prd', prd[0:1], max_outputs=1)
+            sf.mergeall = tf.summary.merge_all()
 
-                # summary
-                # tf.summary.scalar('loss1/loss_ce', sf.loss_ce)
-                tf.summary.scalar('loss1/loss_mse', sf.loss_mse)
-                tf.summary.scalar('loss1/loss_bc', sf.loss_bc)
-                tf.summary.scalar('loss1/loss_perc', sf.loss_perc)
-                tf.summary.scalar('loss1/abs_error', sf.abs_error)
-                tf.summary.scalar('DG_loss/G', sf.loss_G)
-                tf.summary.scalar('DG_loss/D', sf.loss_D)
-                # tf.summary.scalar('Dloss/ls_d_prd', sf.ls_d_prd)
-                # tf.summary.scalar('Dloss/ls_d_y', sf.ls_d_y)
-                tf.summary.scalar('Dloss/loss_d_prd', sf.loss_d_prd)
-                tf.summary.scalar('Dloss/loss_d_y', sf.loss_d_y)
-                tf.summary.image('img/0x', sf.x_[0:1], max_outputs=1)
-                tf.summary.image('img/2y', sf.y_[0:1], max_outputs=1)
-                tf.summary.image('img/1prd', sf.prd[0:1], max_outputs=1)
-                sf.mergeall = tf.summary.merge_all()
-
-                update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
-                with tf.control_dependencies(update_ops):
-                    avg_grads_G = sf.average_gradients(tower_grads_G)
-                    avg_grads_D = sf.average_gradients(tower_grads_D)
-                    sf.train_op_G = sf.opt.apply_gradients(avg_grads_G, global_step=sf.global_step)
-                    sf.train_op_D = sf.opt.apply_gradients(avg_grads_D)
+            sf.train_op_G = sf.opt.apply_gradients(grads_G, global_step=sf.global_step)
+            # sf.train_op_D = sf.opt.apply_gradients(grads_D)
 
     # generator
     def gen(sf, x):
@@ -736,7 +699,7 @@ if __name__ == '__main__':
     # exit()
     # raise ValueError('depth_multiplier is not greater than zero.')
 
-    g = UNET_sr(predict_flag=True, H=387, W=439)
+    g = UNET_sr(predict_flag=False, H=512, W=512)
     with tf.Session(graph=g.graph) as sess:
         # var_list_G = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'generator')
         # saver = tf.train.Saver(var_list=var_list_G)

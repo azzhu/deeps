@@ -2,7 +2,7 @@ import tensorflow as tf
 import os, time, cv2
 import config
 import numpy as np
-from data_init import save2img, merge_smallimgs, read_nd2
+from data_init import save2img, merge_smallimgs, read_nd2, get_all_nd2datas_to_imgs
 from model import UNET_os
 from pathlib import Path
 
@@ -17,22 +17,6 @@ from pathlib import Path
 # 模型目录
 model_path = '/home/zhangli_lab/zhuqingjie/DATA/prj/tunet_onesample/model_release/'
 print(model_path)
-
-
-def get_all_nd2datas_to_imgs(nd2_dir='/home/zhangli_lab/zhuqingjie/dataset/optical_section_img/new210115'):
-    temp_npy_path = Path(f'{nd2_dir}/xs_ys.npy')
-    if temp_npy_path.exists():
-        return np.load(temp_npy_path)
-    xs, ys = [], []
-    nd2files = [f'{nd2_dir}/{i}-w.nd2'
-                for i in range(1, 142)]
-    nd2files_lb = [f'{nd2_dir}/{i}.nd2'
-                   for i in range(1, 142)]
-    for xf, yf in zip(nd2files, nd2files_lb):
-        xs += read_nd2(xf)
-        ys += read_nd2(yf)
-    np.save(temp_npy_path, [xs, ys])
-    return xs, ys
 
 
 def predict_os_nd2_data():
