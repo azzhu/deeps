@@ -31,7 +31,7 @@ def read_nd2(p):
 
 def get_all_nd2datas_to_imgs(
         nd2_dir='/home/zhangli_lab/zhuqingjie/dataset/optical_section_img/new210115',
-        file_end_index=142):
+        file_end_index=241):
     temp_npy_path = Path(f'{nd2_dir}/xs_ys.npy')
     if temp_npy_path.exists():
         return np.load(temp_npy_path)
@@ -45,14 +45,6 @@ def get_all_nd2datas_to_imgs(
         ys += read_nd2(yf)
     np.save(temp_npy_path, [xs, ys])
     return xs, ys
-
-
-# 0-1的矩阵保存为0-255的图像
-def save2img(arr, path):
-    arr = np.reshape(arr, [hw, hw])
-    arr = arr * 255
-    arr = arr.astype(np.uint8)
-    cv2.imwrite(path, arr)
 
 
 # 不管图像深度是多少 都按8位来算
@@ -103,6 +95,7 @@ class Datas_nd2:
         self.data_dir = Path('/home/zhangli_lab/zhuqingjie/dataset/optical_section_img/new210115/')
         # self.__init_nd2_to_npy()
         # self.__datas_split()
+        # exit()
         self.load_train_and_test_datas()
         self.train_datas_ids = list(range(len(self.train_datas)))
         self.test_datas_ids = list(range(len(self.test_datas)))
@@ -111,7 +104,7 @@ class Datas_nd2:
         self.xs, self.ys = get_all_nd2datas_to_imgs()
 
     def __datas_split(self):
-        def get_random_ids(train_r=0.8):
+        def get_random_ids(train_r=0.75):
             npyf = Path(self.data_dir, f'random_ids_{len(self.xs)}_{train_r}.npy')
             if npyf.exists():
                 return np.load(npyf)
@@ -136,8 +129,10 @@ class Datas_nd2:
     def load_train_and_test_datas(self):
         self.train_datas = np.load(Path(self.data_dir, 'train_datas.npy'))
         self.test_datas = np.load(Path(self.data_dir, 'test_datas.npy'))
+        print(f'train: {self.train_datas.shape}')
+        print(f'test : {self.test_datas.shape}')
 
-    def get_batch(self, batch_size=8):
+    def get_batch(self, batch_size=6):
         random_ids = random.choices(self.train_datas_ids, k=batch_size)
         das = self.train_datas[random_ids]
         return das[:, 0], das[:, 1]
@@ -146,6 +141,7 @@ class Datas_nd2:
         random_ids = random.choices(self.test_datas_ids, k=batch_size)
         das = self.test_datas[random_ids]
         return das[:, 0], das[:, 1]
+
 
 
 # # 不管图像深度是多少 都按8位来算
@@ -185,38 +181,10 @@ def merge_smallimgs(imgs, src_h, src_w):
 
 
 if __name__ == '__main__':
-    # dn = Datas_nd2()
-    # st = time.time()
-    # xs, ys = dn.get_batch()
-    # print(time.time() - st)
-    # print(xs.shape, ys.shape)
+    dn = Datas_nd2()
+    st = time.time()
+    xs, ys = dn.get_batch()
+    print(time.time() - st)
+    print(xs.shape, ys.shape)
+    exit()
 
-    import numpy as np
-    import ctypes as ct
-    from skimage import io
-    import time, cv2, os
-    from PIL import Image
-
-    # load data
-    imgfiles = [f'/home/zhangli_lab/zhuqingjie/DATA/temp_guoyunfei/C3_500/C1_Z{i:0>3d}.tif' for i in range(500)]
-    img = [cv2.imread(f, 0) for f in imgfiles]
-    img = np.array(img)
-
-    # 先二值化
-    img = (img > 70).astype(np.uint8) * 255
-    io.imsave('/home/zhangli_lab/zhuqingjie/DATA/temp_guoyunfei/c3_bin.tif', img)
-
-    # 去噪
-    so = ct.cdll.LoadLibrary('/home/zhangli_lab/zhuqingjie/DATA/APP/my_libs/connectedComponents3D-master/denoise.so')
-    img = img.astype(np.int32)
-    src = img.copy()
-    dst = np.zeros_like(src)
-    h, w, c = dst.shape[:3]
-    p1 = src.ctypes.data_as(ct.POINTER(ct.c_int32))
-    p2 = dst.ctypes.data_as(ct.POINTER(ct.c_int32))
-    ti = time.time()
-    so.connectedComponents3D(p1, p2, h, w, c, 3000)
-    print(time.time() - ti)
-    dst = dst != 0
-    dst = dst.astype(np.uint8) * 255
-    io.imsave('/home/zhangli_lab/zhuqingjie/DATA/temp_guoyunfei/c3_bin_d.tif', dst)

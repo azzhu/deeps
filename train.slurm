@@ -1,8 +1,10 @@
-#!/mnt/export/nzx-slurm/18.08.7/bin/sbatch
+#!/bin/bash
+
 #SBATCH -J train
 #SBATCH -o out.out
 #SBATCH -p q_ai
-#SBATCH -n 18
+#SBATCH -c 3
+#SBATCH --gres=gpu:1
 
 
 module load cuda/10.0

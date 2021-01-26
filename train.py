@@ -15,10 +15,6 @@ from pathlib import Path
 STEPS = int(1e5)
 
 
-class BreakAll(Exception):
-    pass
-
-
 def train():
     data = Datas_nd2()
 
@@ -39,34 +35,30 @@ def train():
     # train
     with tf.Session(graph=g.graph) as sess:
         var_list_G = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'generator')
-        saver = tf.train.Saver(max_to_keep=1, var_list=var_list_G)
-        # saver = tf.train.Saver(max_to_keep=1)
+        g_list = tf.global_variables()
+        bn_moving_vars = [g for g in g_list if 'moving_mean' in g.name]
+        bn_moving_vars += [g for g in g_list if 'moving_variance' in g.name]
+        bn_moving_vars = [g for g in bn_moving_vars if 'generator' in g.name]
+        saver = tf.train.Saver(max_to_keep=1, var_list=var_list_G + bn_moving_vars)
         summary_writer = tf.summary.FileWriter(logdir=config.logdir)
         Path(config.logdir, 'v').mkdir(exist_ok=True)
         summary_writer_v = tf.summary.FileWriter(logdir=os.path.join(config.logdir, 'v'))
+        sess.run(tf.global_variables_initializer())
         if config.restore_model:
             print('restore_model')
-            print(f'{config.restore_path}last_random_ind.txt')
-            flist = os.listdir(config.restore_path)
-            for f in flist:
-                if "model_" in f:
-                    model_ind = f.split('.')[0]
-                    sess.run(tf.global_variables_initializer())
-                    saver.restore(sess, os.path.join(config.restore_path, model_ind))
-                    break
-        else:
-            sess.run(tf.global_variables_initializer())
+            saver_temp = tf.train.Saver(var_list=var_list_G)
+            saver_temp.restore(sess, config.restore_path)
 
         time_use = []
         for step in range(STEPS):
             time_start = time.time()
             xs, ys = data.get_batch()
-            # _, _, summary, abs_error, gs = sess.run(
-            #     [g.train_op_G, g.train_op_D, g.mergeall, g.abs_error, g.global_step],
-            #     feed_dict={g.x: xs, g.y: ys})
-            _, summary, abs_error, gs = sess.run(
-                [g.train_op_G, g.mergeall, g.abs_error, g.global_step],
+            _, _, summary, abs_error, gs = sess.run(
+                [g.train_op_G, g.train_op_D, g.mergeall, g.abs_error, g.global_step],
                 feed_dict={g.x: xs, g.y: ys})
+            # _, summary, abs_error, gs = sess.run(
+            #     [g.train_op_G, g.mergeall, g.abs_error, g.global_step],
+            #     feed_dict={g.x: xs, g.y: ys})
             time_end = time.time()
             time_use.append(time_end - time_start)
             summary_writer.add_summary(summary, gs)
@@ -85,8 +77,9 @@ def train():
                 time_use = []
 
             # save
-            if gs % 500 == 0:
-                saver.save(sess, f'{config.logdir}/model_{gs}')
+            if gs % 300 == 0:
+                print(f'saved: {config.logdir}/model_{gs:0>6d}')
+                saver.save(sess, f'{config.logdir}/model_{gs:0>6d}')
 
 
 if __name__ == '__main__':
