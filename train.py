@@ -53,12 +53,12 @@ def train():
         for step in range(STEPS):
             time_start = time.time()
             xs, ys = data.get_batch()
-            _, _, summary, abs_error, gs = sess.run(
-                [g.train_op_G, g.train_op_D, g.mergeall, g.abs_error, g.global_step],
-                feed_dict={g.x: xs, g.y: ys})
-            # _, summary, abs_error, gs = sess.run(
-            #     [g.train_op_G, g.mergeall, g.abs_error, g.global_step],
+            # _, _, summary, abs_error, gs = sess.run(
+            #     [g.train_op_G, g.train_op_D, g.mergeall, g.abs_error, g.global_step],
             #     feed_dict={g.x: xs, g.y: ys})
+            _, summary, abs_error, gs = sess.run(
+                [g.train_op_G, g.mergeall, g.abs_error, g.global_step],
+                feed_dict={g.x: xs, g.y: ys})
             time_end = time.time()
             time_use.append(time_end - time_start)
             summary_writer.add_summary(summary, gs)

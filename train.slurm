@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J train
+#SBATCH -J train_j
 #SBATCH -o out.out
 #SBATCH -p q_ai
 #SBATCH -c 3

@@ -18,14 +18,20 @@ from pathlib import Path
 # model_path = '/home/zhangli_lab/zhuqingjie/DATA/prj/tunet_onesample/model_release/'
 # print(model_path)
 
+'''
+os justunet模型路径：
+'/home/zhangli_lab/zhuqingjie/prj/tunet_onesample/logdir_nd2_justunet_retrain/model_004800'
+'''
 
 def predict_os_nd2_data():
-    model_path_dir = '/home/zhangli_lab/zhuqingjie/prj/tunet_onesample/logdir_nd2_justunet/'
+    model_path_dir = '/home/zhangli_lab/zhuqingjie/prj/tunet_onesample/logdir_nd2_justunet_retrain/'
+    # model_path_dir = '/home/zhangli_lab/zhuqingjie/prj/tunet_onesample/logdir_nd2_deeps/'
 
     flist = list(Path(model_path_dir).rglob('*.index'))
     key_fun = lambda x: int(x.stem.split('_')[1])
     flist = sorted(flist, key=key_fun)
     model_path_and_ind = str(Path(flist[-1].parent, flist[-1].stem))
+    model_path_and_ind = '/home/zhangli_lab/zhuqingjie/prj/tunet_onesample/logdir_nd2_justunet_retrain/model_004800'
     print(model_path_and_ind)
     # exit()
 
@@ -60,13 +66,13 @@ def predict_os_nd2_data():
         # exit()
 
         for i, (x, y) in enumerate(test_datas):
-            # 先把x和y保存
-            x_img = x * 255
-            y_img = y * 255
-            x_img = np.round(x_img).astype(np.uint8)
-            y_img = np.round(y_img).astype(np.uint8)
-            cv2.imwrite(f'{saved_dir}{i}_0x.tif', x_img)
-            cv2.imwrite(f'{saved_dir}{i}_3y.tif', y_img)
+            # # 先把x和y保存
+            # x_img = x * 255
+            # y_img = y * 255
+            # x_img = np.round(x_img).astype(np.uint8)
+            # y_img = np.round(y_img).astype(np.uint8)
+            # cv2.imwrite(f'{saved_dir}{i}_0x.tif', x_img)
+            # cv2.imwrite(f'{saved_dir}{i}_3y.tif', y_img)
 
             # 预测
             x = x[None, :, :, None]
@@ -79,7 +85,7 @@ def predict_os_nd2_data():
             # 保存预测结果
             r_img = res * 255
             r_img = np.round(r_img).astype(np.uint8)
-            cv2.imwrite(f'{saved_dir}{i}_1justunet.tif', r_img)
+            cv2.imwrite(f'{saved_dir}{i}_1unet.tif', r_img)
 
 
 if __name__ == '__main__':
