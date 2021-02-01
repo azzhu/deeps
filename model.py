@@ -415,12 +415,10 @@ class UNET_sr():
             y_ = sf.y
 
             prd = sf.gen(x_)
-            # d_prd = sf.disc(prd)
-            # loss_d_prd = tf.reduce_mean(d_prd)
-            # loss_d_prd = tf.reduce_mean(tf.log(tf.clip_by_value(d_prd, 1e-10, 1.0)))
-            # d_y = sf.disc(y_)
-            # loss_d_y = tf.reduce_mean(d_y)
-            # loss_d_y = tf.reduce_mean(tf.log(tf.clip_by_value(d_y, 1e-10, 1.0)))
+            d_prd = sf.disc(x_, prd)
+            loss_d_prd = tf.reduce_mean(tf.log(tf.clip_by_value(d_prd, 1e-10, 1.0)))
+            d_y = sf.disc(x_, y_)
+            loss_d_y = tf.reduce_mean(tf.log(tf.clip_by_value(d_y, 1e-10, 1.0)))
             abs_error = tf.reduce_mean(tf.abs(y_ - prd))
             sf.abs_error = abs_error
 
@@ -428,47 +426,41 @@ class UNET_sr():
             # yr = tf.reshape(y_, [y_.shape[0], -1])
             # prdr = tf.reshape(prd, [prd.shape[0], -1])
             # loss_mse = tf.losses.mean_squared_error(yr, prdr)
-            loss_mse = tf.keras.losses.MeanSquaredError()(y_, prd)
+            # loss_mse = tf.keras.losses.MeanSquaredError()(y_, prd)
             # loss_ce = tf.losses.sigmoid_cross_entropy(yr, prdr)
             # loss_bc = tf.keras.losses.BinaryCrossentropy()(y_, prd)
 
             # Perceptual Loss
-            # vgg = VGG()
-            # y_perc = vgg.forward(y_)
-            # prd_perc = vgg.forward(prd)
-            # vgg = vgg16()
-            # y_perc = vgg(tf.concat([y_] * 3, axis=-1))
-            # prd_perc = vgg(tf.concat([prd] * 3, axis=-1))
-            # yr_perc = tf.reshape(y_perc, [y_perc.shape[0], -1])
-            # prdr_perc = tf.reshape(prd_perc, [prd_perc.shape[0], -1])
-            # loss_perc = tf.losses.mean_squared_error(yr_perc, prdr_perc)
-            # loss_perc = tf.reduce_mean(tf.abs(y_perc - prd_perc))
+            vgg = vgg16()
+            y_perc = vgg(tf.concat([y_] * 3, axis=-1))
+            prd_perc = vgg(tf.concat([prd] * 3, axis=-1))
+            loss_perc = tf.reduce_mean(tf.abs(y_perc - prd_perc))
 
             # Adversarial Loss
-            # loss_G = abs_error + loss_perc - loss_d_prd
+            loss_G = abs_error + loss_perc - loss_d_prd
             # loss_G = loss_mse * 1e2 + loss_perc * 1e-6 - loss_d_prd
-            loss_G = loss_mse
-            # loss_D = (loss_d_prd - loss_d_y) * 10
+            # loss_G = loss_mse
+            loss_D = loss_d_prd - loss_d_y
 
             # gard
             update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
             with tf.control_dependencies(update_ops):
                 var_list_G = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'generator')
-                # var_list_D = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'discriminator')
+                var_list_D = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'discriminator')
                 grads_G = sf.opt.compute_gradients(loss_G, var_list=var_list_G)
-                # grads_D = sf.opt.compute_gradients(loss_D, var_list=var_list_D)
+                grads_D = sf.opt.compute_gradients(loss_D, var_list=var_list_D)
                 sf.train_op_G = sf.opt.apply_gradients(grads_G, global_step=sf.global_step)
-                # sf.train_op_D = sf.opt.apply_gradients(grads_D)
+                sf.train_op_D = sf.opt.apply_gradients(grads_D)
 
             # summary
-            tf.summary.scalar('loss1/loss_mse', loss_mse)
+            # tf.summary.scalar('loss1/loss_mse', loss_mse)
             # tf.summary.scalar('loss1/loss_bc', loss_bc)
             # tf.summary.scalar('loss1/loss_perc', loss_perc)
             tf.summary.scalar('loss1/abs_error', abs_error * 255)
             # tf.summary.scalar('DG_loss/G', loss_G)
             # tf.summary.scalar('DG_loss/D', loss_D)
-            # tf.summary.scalar('Dloss/loss_d_prd', loss_d_prd)
-            # tf.summary.scalar('Dloss/loss_d_y', loss_d_y)
+            tf.summary.scalar('Dloss/loss_d_prd', loss_d_prd)
+            tf.summary.scalar('Dloss/loss_d_y', loss_d_y)
             tf.summary.image('img/0x', x_[0:1], max_outputs=1)
             tf.summary.image('img/2y', y_[0:1], max_outputs=1)
             tf.summary.image('img/1prd', prd[0:1], max_outputs=1)
@@ -631,9 +623,10 @@ class UNET_sr():
             return act1
 
     # discriminator
-    def disc(sf, prd):
+    def disc(sf, x, prd):
         print_('loading discriminator..')
         with tf.variable_scope('discriminator', reuse=tf.AUTO_REUSE):
+            x = tf.concat([x, prd], axis=-1)
             c1 = sf.conv(prd, 16, 'c1')
             # p1 = L.max_pooling2d(c1, 2, 2, name='p1')
             c2 = sf.conv(c1, 16, 'c2')

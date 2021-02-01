@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH -J train_j
+#SBATCH -J train
 #SBATCH -o out.out
 #SBATCH -p q_ai
-#SBATCH -c 3
+#SBATCH -c 10
 #SBATCH --gres=gpu:1
 
 

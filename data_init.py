@@ -97,6 +97,7 @@ class Datas_nd2:
         # self.__datas_split()
         # exit()
         self.load_train_and_test_datas()
+        # self.__datas_split_to_256()
         self.train_datas_ids = list(range(len(self.train_datas)))
         self.test_datas_ids = list(range(len(self.test_datas)))
 
@@ -126,22 +127,48 @@ class Datas_nd2:
         np.save(Path(self.data_dir, 'train_datas.npy'), self.train_datas)
         np.save(Path(self.data_dir, 'test_datas.npy'), self.test_datas)
 
+    def __datas_split_to_256(self):
+        train = []
+        test = []
+        for td in self.train_datas:
+            st_ps = [0, 80, 160, 240, 256]
+            for st_h in st_ps:
+                for st_w in st_ps:
+                    train.append(td[:, st_h:st_h + 256, st_w:st_w + 256])
+        for td in self.test_datas:
+            st_ps = [0, 80, 160, 240, 256]
+            for st_h in st_ps:
+                for st_w in st_ps:
+                    test.append(td[:, st_h:st_h + 256, st_w:st_w + 256])
+        train = np.array(train)
+        test = np.array(test)
+        print(train.shape)
+        print(test.shape)
+        np.save(Path(self.data_dir, 'train_datas_256.npy'), train)
+        np.save(Path(self.data_dir, 'test_datas_256.npy'), test)
+
     def load_train_and_test_datas(self):
-        self.train_datas = np.load(Path(self.data_dir, 'train_datas.npy'))
-        self.test_datas = np.load(Path(self.data_dir, 'test_datas.npy'))
+        self.train_datas = np.load(Path(self.data_dir, 'train_datas_256.npy'))
+        self.test_datas = np.load(Path(self.data_dir, 'test_datas_256.npy'))
         print(f'train: {self.train_datas.shape}')
         print(f'test : {self.test_datas.shape}')
 
-    def get_batch(self, batch_size=6):
+    @staticmethod
+    def load_test_datas_512():
+        test_datas = np.load(Path('/home/zhangli_lab/zhuqingjie/dataset/optical_section_img/new210115/',
+                                  'test_datas.npy'))
+        print(f'test : {test_datas.shape}')
+        return test_datas
+
+    def get_batch(self, batch_size=12):
         random_ids = random.choices(self.train_datas_ids, k=batch_size)
         das = self.train_datas[random_ids]
         return das[:, 0], das[:, 1]
 
-    def get_batch_test(self, batch_size=8):
+    def get_batch_test(self, batch_size=12):
         random_ids = random.choices(self.test_datas_ids, k=batch_size)
         das = self.test_datas[random_ids]
         return das[:, 0], das[:, 1]
-
 
 
 # # 不管图像深度是多少 都按8位来算
@@ -187,4 +214,3 @@ if __name__ == '__main__':
     print(time.time() - st)
     print(xs.shape, ys.shape)
     exit()
-

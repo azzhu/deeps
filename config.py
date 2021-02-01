@@ -16,12 +16,11 @@ prjdir = '/home/zhangli_lab/zhuqingjie/DATA/prj'
 data_path = f'{prjdir}/tunet_onesample/data/'
 
 workdir = f'{prjdir}/tunet_onesample/'
-logdir = f'{prjdir}/tunet_onesample/logdir_nd2_justunet_retrain/'
-# logdir = f'{prjdir}/tunet_onesample/logdir_nd2_deeps/'
+# logdir = f'{prjdir}/tunet_onesample/logdir_nd2_justunet/'
+logdir = f'{prjdir}/tunet_onesample/logdir_nd2_deeps/'
 
 restore_model = False
-restore_path = f'{prjdir}/tunet_onesample/logdir_nd2_bak/logdir_nd2_justunet/model_71900'
-# restore_path = f'{prjdir}/tunet_onesample/logdir_nd2_justunet/model_001200'
+restore_path = f'{prjdir}/tunet_onesample/logdir_nd2_justunet/model_099900'
 
 
 def read_hot_config():
