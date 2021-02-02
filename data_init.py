@@ -6,12 +6,6 @@ from nd2file import ND2MultiDim
 from pathlib import Path
 
 
-# param
-# hw = config.size
-# step = config.step
-# data_path = config.data_path
-
-
 def read_nd2(p):
     '''
     读一张nd2格式的图像（1024*1024），归一化，返回被分割的4张小图像（512*512）

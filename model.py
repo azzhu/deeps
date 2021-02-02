@@ -423,9 +423,6 @@ class UNET_sr():
             sf.abs_error = abs_error
 
             # MSE Loss
-            # yr = tf.reshape(y_, [y_.shape[0], -1])
-            # prdr = tf.reshape(prd, [prd.shape[0], -1])
-            # loss_mse = tf.losses.mean_squared_error(yr, prdr)
             # loss_mse = tf.keras.losses.MeanSquaredError()(y_, prd)
             # loss_ce = tf.losses.sigmoid_cross_entropy(yr, prdr)
             # loss_bc = tf.keras.losses.BinaryCrossentropy()(y_, prd)

@@ -23,7 +23,6 @@ def predict_os_nd2_data():
     key_fun = lambda x: int(x.stem.split('_')[1])
     flist = sorted(flist, key=key_fun)
     model_path_and_ind = str(Path(flist[-1].parent, flist[-1].stem))
-    # model_path_and_ind = '/home/zhangli_lab/zhuqingjie/prj/tunet_onesample/logdir_nd2_justunet/model_006300'
     print(model_path_and_ind)
     # exit()
 

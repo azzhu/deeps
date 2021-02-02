@@ -8,9 +8,6 @@ import config
 from data_init import Datas_nd2
 from pathlib import Path
 
-# os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(map(str, config.gpus))
-# os.system('echo $CUDA_VISIBLE_DEVICES')
-
 # param
 STEPS = int(1e5)
 
